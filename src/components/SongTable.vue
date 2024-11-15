@@ -143,7 +143,8 @@ export default defineComponent({
       _cols: unknown,
       _getCellValue: (col: unknown, row: Song) => unknown
     ) {
-      const filter_string = this.filter_string.toLowerCase();
+      const filter_string = this.filter_string ? this.filter_string.toLowerCase() : '';
+      const filter_strings = filter_string.split(/,? +/gi);
       const p = (row: Song): boolean => {
         // Happiness check
         if (row.happiness != 0 && (row.happiness < this.happiness_filter.min || row.happiness > this.happiness_filter.max)) return false;
@@ -170,16 +171,19 @@ export default defineComponent({
           }
         }
         // Name check
-        if (!row.name.toLowerCase().includes(filter_string) && !
-          row.alt.some((altName) =>
-            altName.toLowerCase().includes(filter_string)
-          ) && !
-          row.themes.some((themeName) =>
-            themeName.toLowerCase().includes(filter_string)
-          )
-        ) return false;
+        for (const keyword of filter_strings) {
+          if (!row.name.toLowerCase().includes(keyword) && !
+            row.alt.some((altName) =>
+              altName.toLowerCase().includes(keyword)
+            ) && !
+            row.themes.some((themeName) =>
+              themeName.toLowerCase().includes(keyword)
+            )
+          ) return false;
+        }
         return true;
       };
+
       return rows.filter(p);
     },
   },

@@ -1,10 +1,10 @@
 <template>
   <q-page>
     <div class="q-pa-md">
-      <q-input v-model="filter_string" label="Search" />
+      <q-input v-model="filter_string" label="Search" clearable />
       <div class="filters">
         <q-select v-model="singers_filter" multiple :options="singers" label="Singers" style="flex-grow: 1"
-          behavior="menu" />
+          behavior="menu" clearable />
         <div class="filters" style="width: 45%; max-width: 50%">
           <q-toggle v-model="acc_filter" size="xl" icon="piano" />
           <q-toggle v-model="unacc_filter" size="xl" icon="piano_off" />
@@ -12,7 +12,7 @@
       </div>
       <div class="filters">
         <q-select v-model="cat_filter" multiple :options="categories" label="Categories" style="flex-grow: 1"
-          behavior="menu" />
+          behavior="menu" clearable />
         <q-range v-model="refrain_filter" :min=1 :max=3 :step=1 markers marker-labels
           style="width: 45%; max-width: 50%">
           <template v-slot:marker-label-group="{ markerList }">
@@ -59,7 +59,7 @@ export default defineComponent({
   },
   data() {
     return {
-      filter_string: ref(''),
+      filter_string: ref(null),
       happiness_filter: ref({ min: 1, max: 5 }),
       refrain_filter: ref({ min: 1, max: 3 }),
       singers_filter: ref(null),
