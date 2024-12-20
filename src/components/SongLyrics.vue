@@ -10,14 +10,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Song } from './models';
+import type { Song } from './models';
 import { getSongs } from 'src/util/table-utils';
 
 export default defineComponent({
   name: 'SongLyrics',
   props: ['song_name'],
   async setup(props) {
-    let songs: Song[] = await getSongs();
+    const songs: Song[] = await getSongs();
     let song = null;
     for (const a_song of songs) {
       if (props.song_name == a_song.name) {

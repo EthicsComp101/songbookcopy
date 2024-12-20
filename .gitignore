@@ -128,3 +128,6 @@ dist
 .yarnrc
 
 .quasar/*
+/quasar.config.*.temporary.compiled*
+
+.env.local*

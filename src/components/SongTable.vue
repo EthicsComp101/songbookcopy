@@ -17,8 +17,8 @@
             :icon="props.expand ? 'expand_more' : 'chevron_right'" />
         </q-td>
         <q-td v-for="col in props.cols" :key="col.name" :props="props" class="table-cell" :class="{
-    small: col.value.includes('\n') && col.name != 'name'
-  }">
+          small: col.value.includes('\n') && col.name != 'name'
+        }">
           {{ col.value }}
           <div v-if="col.name == 'name'" class="composer">{{ props.row.composer }}</div>
         </q-td>
@@ -78,8 +78,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { QTableProps } from 'quasar';
-import { Song } from './models';
+import type { QTableProps } from 'quasar';
+import type { Song } from './models';
 import { getSongs } from 'src/util/table-utils';
 
 const NO_ROWS = [0];
@@ -91,7 +91,7 @@ function removeThe(s: string): string {
 
 const COLUMNS: QTableProps['columns'] = [{
   name: 'name', label: 'Name', field: 'name', required: true, align: 'left', sortable: true,
-  sort: (a, b, _rowA, _rowB) => {
+  sort: (a, b/*, _rowA, _rowB*/) => {
     return removeThe(a).localeCompare(removeThe(b));
   }
 }, {
@@ -102,11 +102,12 @@ const COLUMNS: QTableProps['columns'] = [{
   name: 'date', label: 'Date Added', field: (row: Song) => {
     const pieces = row.date.trim().split('/');
     console.log(pieces);
-    let date = new Date(parseInt(pieces[2]), parseInt(pieces[1]) - 1, parseInt(pieces[0]));
+    if (!pieces[0] || !pieces[1] || !pieces[2]) return '';
+    const date = new Date(parseInt(pieces[2]), parseInt(pieces[1]) - 1, parseInt(pieces[0]));
     const options: Intl.DateTimeFormatOptions = { year: '2-digit', month: 'short', day: '2-digit' };
     return date.toLocaleDateString('en-GB', options);
   },
-  required: true, align: 'center', sortable: true, sort: (a, b, _rowA, _rowB) => {
+  required: true, align: 'center', sortable: true, sort: (a, b/*, _rowA, _rowB*/) => {
     return Date.parse(a) < Date.parse(b) ? -1 : (Date.parse(a) > Date.parse(b) ? 1 : 0);
   }
 },];
@@ -115,9 +116,9 @@ export default defineComponent({
   name: 'SongTable',
   props: ['filter_string', 'happiness_filter', 'refrain_filter', 'singers_filter', 'cat_filter', 'acc_filter', 'unacc_filter'],
   async setup(_props, { emit }) {
-    let songs: Song[] = await getSongs();
-    let singers: Map<string, number> = new Map();
-    let categories: Map<string, number> = new Map();
+    const songs: Song[] = await getSongs();
+    const singers: Map<string, number> = new Map();
+    const categories: Map<string, number> = new Map();
     for (const song of songs) {
       for (const singer of song.singers) {
         const count = singers.get(singer);
@@ -138,10 +139,10 @@ export default defineComponent({
   },
   methods: {
     filter(
-      rows: readonly Song[],
+      rows: readonly Song[]/*,
       _terms: string,
       _cols: unknown,
-      _getCellValue: (col: unknown, row: Song) => unknown
+      _getCellValue: (col: unknown, row: Song) => unknown*/
     ) {
       const filter_string = this.filter_string ? this.filter_string.toLowerCase() : '';
       const filter_strings = filter_string.split(/,? +/gi);

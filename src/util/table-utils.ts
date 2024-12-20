@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import { Song } from 'src/components/models';
+import type { Song } from 'src/components/models';
 
 let songs_promise: Promise<Song[]> | null = null;
 
@@ -14,7 +14,7 @@ let songs_promise: Promise<Song[]> | null = null;
 export async function getSongs(): Promise<Song[]> {
   if (songs_promise != null) return songs_promise;
   songs_promise = fetch(
-    'https://docs.google.com/spreadsheets/d/19_AunvMQBWfs3G91r23vIwdEyqy4g9r2p5I7zGPfWvc/gviz/tq?tqx=out:json&sheet=Responses'
+    'https://docs.google.com/spreadsheets/d/19_AunvMQBWfs3G91r23vIwdEyqy4g9r2p5I7zGPfWvc/gviz/tq?tqx=out:json&sheet=Responses',
   )
     .then((res) => {
       if (!res.ok) {
@@ -63,6 +63,7 @@ function makeList(value: string | null, separator = ';') {
     .filter((s) => s.trim().length > 0);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function get(row: any[], i: number): string {
   const item = row[i];
   if (item == null) return '';
