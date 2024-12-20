@@ -927,7 +927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:8.18.1, @typescript-eslint/eslint-plugin@npm:^8.15.0, @typescript-eslint/eslint-plugin@npm:^8.18.1":
+"@typescript-eslint/eslint-plugin@npm:8.18.1, @typescript-eslint/eslint-plugin@npm:^8.15.0":
   version: 8.18.1
   resolution: "@typescript-eslint/eslint-plugin@npm:8.18.1"
   dependencies:
@@ -2445,7 +2445,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:9":
+"eslint@npm:^9.17.0":
   version: 9.17.0
   resolution: "eslint@npm:9.17.0"
   dependencies:
@@ -4185,7 +4185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3":
+"prettier@npm:^3.4.2":
   version: 3.4.2
   resolution: "prettier@npm:3.4.2"
   bin:
@@ -4974,22 +4974,22 @@ __metadata:
     "@quasar/app-vite": "npm:^2.0.2"
     "@quasar/extras": "npm:^1.16.15"
     "@types/node": "npm:^22.10.2"
-    "@typescript-eslint/eslint-plugin": "npm:^8.18.1"
     "@typescript-eslint/parser": "npm:^8.18.1"
     "@vue/eslint-config-prettier": "npm:^10.1.0"
     "@vue/eslint-config-typescript": "npm:^14.1.4"
     autoprefixer: "npm:^10.4.20"
-    eslint: "npm:9"
+    eslint: "npm:^9.17.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-vue: "npm:^9.32.0"
     globals: "npm:^15.14.0"
     marked: "npm:^15.0.4"
     pinia: "npm:^2.3.0"
     postcss: "npm:^8.4.49"
-    prettier: "npm:3"
+    prettier: "npm:^3.4.2"
     quasar: "npm:^2.17.5"
     rollup: "npm:^4.28.1"
     typescript: "npm:^5.7.2"
+    typescript-eslint: "npm:^8.18.1"
     vite: "npm:^6.0.4"
     vite-plugin-checker: "npm:^0.8.0"
     vue: "npm:^3.5.13"
@@ -5369,7 +5369,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-eslint@npm:^8.15.0":
+"typescript-eslint@npm:^8.15.0, typescript-eslint@npm:^8.18.1":
   version: 8.18.1
   resolution: "typescript-eslint@npm:8.18.1"
   dependencies:
