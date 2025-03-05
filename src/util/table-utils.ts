@@ -34,7 +34,7 @@ export async function getSongs(): Promise<Song[]> {
           alt: makeList(get(row, 2)),
           roud: Number(get(row, 3)),
           singers: makeList(get(row, 13)),
-          date: get(row, 0),
+          date: new Date(get(row, 0).trim()),
           composer: get(row, 4),
           unaccompanied:
             row[5] == null || get(row, 5).includes('Unaccompanied'),

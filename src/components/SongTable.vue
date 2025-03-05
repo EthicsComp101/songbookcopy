@@ -17,7 +17,7 @@
             :icon="props.expand ? 'expand_more' : 'chevron_right'" />
         </q-td>
         <q-td v-for="col in props.cols" :key="col.name" :props="props" class="table-cell" :class="{
-          small: col.value.includes('\n') && col.name != 'name'
+          small: (typeof (col.value) == 'string') && col.value.includes('\n') && col.name != 'name'
         }">
           {{ col.value }}
           <div v-if="col.name == 'name'" class="composer">{{ props.row.composer }}</div>
@@ -100,16 +100,15 @@ const COLUMNS: QTableProps['columns'] = [{
     'center', sortable: true,
 }, {
   name: 'date', label: 'Date Added', field: (row: Song) => {
-    const pieces = row.date.trim().split('/');
-    console.log(pieces);
-    if (!pieces[0] || !pieces[1] || !pieces[2]) return '';
-    const date = new Date(parseInt(pieces[2]), parseInt(pieces[1]) - 1, parseInt(pieces[0]));
-    const options: Intl.DateTimeFormatOptions = { year: '2-digit', month: 'short', day: '2-digit' };
-    return date.toLocaleDateString('en-GB', options);
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: undefined,
+      day: 'numeric',
+      month: 'short',
+      year: '2-digit'
+    };
+    return row.date.toLocaleDateString("en-GB", options);
   },
-  required: true, align: 'center', sortable: true, sort: (a, b/*, _rowA, _rowB*/) => {
-    return Date.parse(a) < Date.parse(b) ? -1 : (Date.parse(a) > Date.parse(b) ? 1 : 0);
-  }
+  required: true, align: 'center', sortable: true, sort: (_a, _b, rowA, rowB) => rowA.date.getTime() > rowB.date.getTime() ? 1 : 0
 },];
 
 export default defineComponent({
