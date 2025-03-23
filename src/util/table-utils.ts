@@ -34,7 +34,7 @@ export async function getSongs(): Promise<Song[]> {
           alt: makeList(get(row, 2)),
           roud: Number(get(row, 3)),
           singers: makeList(get(row, 13)),
-          date: new Date(get(row, 0).trim()),
+          date: parseDate(get(row, 0).trim()),
           composer: get(row, 4),
           unaccompanied:
             row[5] == null || get(row, 5).includes('Unaccompanied'),
@@ -69,4 +69,24 @@ function get(row: any[], i: number): string {
   if (item == null) return '';
   if (item.f != null) return item.f;
   return item.v;
+}
+function parseDate(dateTime: string): Date {
+  const space = dateTime.indexOf(' ');
+  const date = dateTime
+    .substring(0, space)
+    .split('/')
+    .map((s) => parseInt(s));
+  const time = dateTime
+    .substring(space + 1)
+    .split(':')
+    .map((s) => parseInt(s));
+
+  return new Date(
+    date[2] ?? 0,
+    date[1] ?? 0,
+    date[0] ?? 0,
+    time[0] ?? 0,
+    time[1] ?? 0,
+    time[2] ?? 0,
+  );
 }
