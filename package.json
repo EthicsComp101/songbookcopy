@@ -14,6 +14,9 @@
     "@quasar/extras": "^1.16.15",
     "@typescript-eslint/parser": "^8.18.1",
     "autoprefixer": "^10.4.20",
+    "chart.js": "^4.4.8",
+    "chartjs-adapter-date-fns": "^3.0.0",
+    "date-fns": "^4.1.0",
     "dompurify": "^3.2.4",
     "marked": "^15.0.7",
     "pinia": "^2.3.0",
@@ -23,6 +26,7 @@
     "typescript-eslint": "^8.18.1",
     "vite": "^6.0.4",
     "vue": "^3.5.13",
+    "vue-chartjs": "^5.3.2",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {

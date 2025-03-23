@@ -133,29 +133,7 @@ const props = defineProps<{
   unacc_filter: boolean;
 }>();
 
-const songs: Song[] = await getSongs();
-const singers: Map<string, number> = new Map();
-const categories: Map<string, number> = new Map();
-const themes: Map<string, number> = new Map();
-const purposes: Map<string, number> = new Map();
-for (const song of songs) {
-  for (const singer of song.singers) {
-    const count = singers.get(singer);
-    singers.set(singer, 1 + (count ?? 0));
-  }
-  for (const cat of song.categories) {
-    const count = categories.get(cat);
-    categories.set(cat, 1 + (count ?? 0));
-  }
-  for (const theme of song.themes) {
-    const count = themes.get(theme);
-    themes.set(theme, 1 + (count ?? 0));
-  }
-  for (const purpose of song.purposes) {
-    const count = purposes.get(purpose);
-    purposes.set(purpose, 1 + (count ?? 0));
-  }
-}
+const { songs, singers, categories, themes, purposes } = await getSongs();
 
 const emits = defineEmits<{
   updateSingers: [singers: Map<string, number>];

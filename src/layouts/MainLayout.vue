@@ -2,35 +2,58 @@
   <q-layout view="lHh LpR lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="toggleLeftDrawer"
+        />
 
-        <q-toolbar-title class="toolbar-title"> The Folkbook </q-toolbar-title>
+        <q-toolbar-title class="toolbar-title" @click="home"
+          >The Folkbook</q-toolbar-title
+        >
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
+        <q-item-label header> Tools </q-item-label>
+        <EssentialLink v-for="link in tools" :key="link.title" v-bind="link" />
         <q-item-label header> Helpful Links </q-item-label>
-
-        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+        <EssentialLink
+          v-for="link in references"
+          :key="link.title"
+          v-bind="link"
+        />
       </q-list>
     </q-drawer>
 
     <q-page-container>
       <router-view v-slot="{ Component }">
         <keep-alive include="SongTable,TablePage">
-          <component :is="Component" />
+          <Suspense> <component :is="Component" /></Suspense>
         </keep-alive>
       </router-view>
     </q-page-container>
   </q-layout>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
+import { useRouter } from 'vue-router';
 
-const linksList = [
+const tools = [
+  {
+    title: 'Charts',
+    caption: 'For some fun stats about the songbook',
+    icon: 'bar_chart',
+    to: '/charts',
+  },
+];
+const references = [
   {
     title: 'Song Entry Form',
     caption: 'For adding new entries to this site',
@@ -63,29 +86,22 @@ const linksList = [
   },
   {
     title: 'Clare Country Library',
-    caption: 'Audio recordings collected in Clare by Jim Carroll and Pat Mackenzie',
+    caption:
+      'Audio recordings collected in Clare by Jim Carroll and Pat Mackenzie',
     icon: 'headphones',
     link: 'https://www.clarelibrary.ie/eolas/coclare/songs/cmc/index.htm',
   },
 ];
 
-export default defineComponent({
-  name: 'MainLayout',
+const leftDrawerOpen = ref(false);
 
-  components: {
-    EssentialLink,
-  },
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
 
-  setup() {
-    const leftDrawerOpen = ref(false);
+const router = useRouter();
 
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
-    };
-  },
-});
+function home() {
+  router.push('/');
+}
 </script>

@@ -1,7 +1,13 @@
 import type { Song } from 'src/components/models';
 import { capitalize } from 'vue';
-
-let songs_promise: Promise<Song[]> | null = null;
+type Results = {
+  songs: Song[];
+  singers: Map<string, number>;
+  categories: Map<string, number>;
+  themes: Map<string, number>;
+  purposes: Map<string, number>;
+};
+let songs_promise: Promise<Results> | null = null;
 
 // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 /* function shuffleArray<T>(array: T[]): void {
@@ -11,7 +17,7 @@ let songs_promise: Promise<Song[]> | null = null;
   }
 } */
 
-export async function getSongs(): Promise<Song[]> {
+export async function getSongs(): Promise<Results> {
   if (songs_promise != null) return songs_promise;
   songs_promise = fetch(
     'https://docs.google.com/spreadsheets/d/19_AunvMQBWfs3G91r23vIwdEyqy4g9r2p5I7zGPfWvc/gviz/tq?tqx=out:json&sheet=Responses',
@@ -48,10 +54,34 @@ export async function getSongs(): Promise<Song[]> {
           lyrics: get(row, 11),
           info: get(row, 15),
         };
+        if (song.date.getTime() == 0) {
+          console.log(song);
+        }
         songs.push(song);
       }
-      // shuffleArray(songs);
-      return songs;
+      const singers: Map<string, number> = new Map();
+      const categories: Map<string, number> = new Map();
+      const themes: Map<string, number> = new Map();
+      const purposes: Map<string, number> = new Map();
+      for (const song of songs) {
+        for (const singer of song.singers) {
+          const count = singers.get(singer);
+          singers.set(singer, 1 + (count ?? 0));
+        }
+        for (const cat of song.categories) {
+          const count = categories.get(cat);
+          categories.set(cat, 1 + (count ?? 0));
+        }
+        for (const theme of song.themes) {
+          const count = themes.get(theme);
+          themes.set(theme, 1 + (count ?? 0));
+        }
+        for (const purpose of song.purposes) {
+          const count = purposes.get(purpose);
+          purposes.set(purpose, 1 + (count ?? 0));
+        }
+      }
+      return { songs, singers, categories, themes, purposes };
     });
   return songs_promise;
 }
@@ -87,7 +117,7 @@ function parseDate(dateTime: string): Date {
 
   return new Date(
     date[2] ?? 0,
-    date[1] ?? 0,
+    (date[1] ?? 1) - 1,
     date[0] ?? 0,
     time[0] ?? 0,
     time[1] ?? 0,

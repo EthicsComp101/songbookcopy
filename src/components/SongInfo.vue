@@ -12,14 +12,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import type { Song } from './models';
 import { getSongs } from 'src/util/load-table';
 
 export default defineComponent({
   name: 'SongInfo',
   props: ['song_name'],
   async setup(props) {
-    const songs: Song[] = await getSongs();
+    const { songs } = await getSongs();
     let song = null;
     for (const a_song of songs) {
       if (props.song_name == a_song.name) {
