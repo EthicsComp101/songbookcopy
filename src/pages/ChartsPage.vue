@@ -23,7 +23,7 @@ import {
   Tooltip,
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
-install();
+if (!window.ResizeObserver) install();
 
 const colors = [
   '#CC6677',
