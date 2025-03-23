@@ -1,5 +1,5 @@
-import { marked } from 'marked';
 import type { Song } from 'src/components/models';
+import { capitalize } from 'vue';
 
 let songs_promise: Promise<Song[]> | null = null;
 
@@ -30,30 +30,34 @@ export async function getSongs(): Promise<Song[]> {
       for (const row_obj of songs_sheet.table.rows) {
         const row = row_obj.c;
         const song: Song = {
-          name: get(row, 1),
+          name: get(row, 0),
           alt: makeList(get(row, 2)),
           roud: Number(get(row, 3)),
           singers: makeList(get(row, 13)),
-          date: parseDate(get(row, 0).trim()),
+          date: parseDate(get(row, 1).trim()),
           composer: get(row, 4),
           unaccompanied:
             row[5] == null || get(row, 5).includes('Unaccompanied'),
           accompanied: row[5] == null || get(row, 5).includes('Accompanied'),
           refrain: get(row, 6),
-          themes: makeList(get(row, 7), '[,;]'),
-          categories: makeList(get(row, 8), '[,;]'),
+          themes: sanitize(makeList(get(row, 7), '[,;]')),
+          categories: sanitize(makeList(get(row, 8), '[,;]')),
+          purposes: sanitize(makeList(get(row, 16), '[,;]')),
           happiness: Number(get(row, 9)),
           reference: get(row, 10),
           lyrics: get(row, 11),
           info: get(row, 15),
         };
-        if (song.info) song.info = await marked.parse(song.info.trim());
         songs.push(song);
       }
       // shuffleArray(songs);
       return songs;
     });
   return songs_promise;
+}
+
+function sanitize(strings: Array<string>) {
+  return strings.map((s) => capitalize(s));
 }
 
 function makeList(value: string | null, separator = ';') {

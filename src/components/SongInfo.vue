@@ -2,7 +2,10 @@
   <div v-if="song && (song.info || song.reference)" class="info-page">
     <h5 class="text-h5">{{ song_name }}</h5>
     <span v-if="song.info" v-html="song.info"></span>
-    <p v-if="song.reference">For additional info, see <a :href="song.reference" target="_blank">here</a>.</p>
+    <p v-if="song.reference">
+      For additional info, see
+      <a :href="song.reference" target="_blank">here</a>.
+    </p>
   </div>
   <div class="notice" v-else>No Info Available</div>
 </template>
@@ -10,7 +13,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import type { Song } from './models';
-import { getSongs } from 'src/util/table-utils';
+import { getSongs } from 'src/util/load-table';
 
 export default defineComponent({
   name: 'SongInfo',

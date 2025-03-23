@@ -1,7 +1,12 @@
 <template>
   <div class="lyrics" v-if="lyrics">
     <h5 class="text-h5">{{ song_name }}</h5>
-    <div class="section" v-for="(section, index) in lyrics" :key="index" @click="scrollTo($event)">
+    <div
+      class="section"
+      v-for="(section, index) in lyrics"
+      :key="index"
+      @click="scrollTo($event)"
+    >
       {{ section }}
     </div>
   </div>
@@ -11,7 +16,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import type { Song } from './models';
-import { getSongs } from 'src/util/table-utils';
+import { getSongs } from 'src/util/load-table';
 
 export default defineComponent({
   name: 'SongLyrics',

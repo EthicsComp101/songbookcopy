@@ -19,6 +19,7 @@ export type Song = {
   refrain: string;
   themes: string[];
   categories: string[];
+  purposes: string[];
   happiness: number;
   reference?: string;
   lyrics?: string;
