@@ -85,7 +85,7 @@ for (const [singer, songs] of songsBySinger.entries()) {
   singerCount += 1;
 }
 const singersOverTime: ChartData<'line', { x: Date; y: number }[]> = {
-  labels: singers.keys().toArray(),
+  labels: Array.from(singers.keys()),
   datasets: singersOverTimeData,
 };
 const singersOverTimeOptions: ChartOptions<'line'> = {
