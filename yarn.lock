@@ -4423,6 +4423,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"resize-observer@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "resize-observer@npm:1.0.4"
+  checksum: 10c0/b257144ea7f63f3de9eb6d760a7d334e3917cb229c286a1079260b83d2361b218b9a1e5716aed6cfcb16979504b43f8c52f08ee53f5c07a8453fb1ff10af9af2
+  languageName: node
+  linkType: hard
+
 "resolve-from@npm:^4.0.0":
   version: 4.0.0
   resolution: "resolve-from@npm:4.0.0"
@@ -5043,6 +5050,7 @@ __metadata:
     postcss: "npm:^8.4.49"
     prettier: "npm:^3.4.2"
     quasar: "npm:^2.17.5"
+    resize-observer: "npm:^1.0.4"
     rollup: "npm:^4.28.1"
     typescript: "npm:^5.7.2"
     typescript-eslint: "npm:^8.18.1"

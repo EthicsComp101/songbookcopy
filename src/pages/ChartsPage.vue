@@ -9,6 +9,7 @@
 import type { Song } from 'src/components/models';
 import { createTypedChart } from 'vue-chartjs';
 import { getSongs } from 'src/util/load-table';
+import { install } from 'resize-observer';
 import type { ChartData, ChartOptions } from 'chart.js';
 import {
   Chart as ChartJS,
@@ -22,6 +23,7 @@ import {
   Tooltip,
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
+install();
 
 const colors = [
   '#CC6677',
