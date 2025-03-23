@@ -241,7 +241,7 @@ function doUpdate(destination: Array<string>, map: Map<string, number>) {
 function doOptionsUpdate(destination: Array<Option>, map: Map<string, number>) {
   destination.splice(0);
   destination.push(
-    ...map.keys().map((s) => {
+    ...Array.from(map.keys()).map((s) => {
       return { label: s, value: s };
     }),
   );
