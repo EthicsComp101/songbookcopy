@@ -11,6 +11,7 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@quasar/cli": "^2.5.0",
     "@quasar/extras": "^1.16.15",
     "@typescript-eslint/parser": "^8.18.1",
     "autoprefixer": "^10.4.20",
@@ -22,6 +23,7 @@
     "pinia": "^2.3.0",
     "postcss": "^8.4.49",
     "quasar": "^2.17.5",
+    "register-service-worker": "^1.7.2",
     "resize-observer": "^1.0.4",
     "rollup": "^4.28.1",
     "typescript-eslint": "^8.18.1",
@@ -43,13 +45,20 @@
     "prettier": "^3.4.2",
     "typescript": "^5.7.2",
     "vite-plugin-checker": "^0.8.0",
-    "vue-tsc": "^2.1.10"
+    "vue-tsc": "^2.1.10",
+    "workbox-build": "^7.0.0",
+    "workbox-cacheable-response": "^7.0.0",
+    "workbox-core": "^7.0.0",
+    "workbox-expiration": "^7.0.0",
+    "workbox-precaching": "^7.0.0",
+    "workbox-routing": "^7.0.0",
+    "workbox-strategies": "^7.0.0"
   },
   "engines": {
     "node": "^20",
     "npm": ">= 6.13.4",
     "yarn": ">= 4.4.0"
   },
-  "packageManager": "yarn@4.4.1",
+  "packageManager": "yarn@4.8.1",
   "type": "module"
 }

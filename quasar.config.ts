@@ -146,7 +146,7 @@ export default defineConfig((/* ctx */) => {
       // extendSSRWebserverConf (esbuildConf) {},
       // extendPackageJson (json) {},
 
-      pwa: false,
+      pwa: true,
 
       // manualStoreHydration: true,
       // manualPostHydrationTrigger: true,
@@ -167,7 +167,17 @@ export default defineConfig((/* ctx */) => {
       manifestFilename: 'manifest.json',
       useCredentialsForManifestTag: false,
       // useFilenameHashes: true,
-      // extendGenerateSWOptions (cfg) {}
+      extendGenerateSWOptions(cfg) {
+        cfg.runtimeCaching = cfg.runtimeCaching || [];
+        cfg.runtimeCaching.push({
+          urlPattern: ({ url }) =>
+            url.href.startsWith('https://docs.google.com/spreadsheets/d'),
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'spreadsheet',
+          },
+        });
+      },
       // extendInjectManifestOptions (cfg) {},
       // extendManifestJson (json) {}
       // extendPWACustomSWConf (esbuildConf) {}
