@@ -14,6 +14,14 @@
         <q-toolbar-title class="toolbar-title" @click="home"
           >The Folkbook</q-toolbar-title
         >
+        <q-btn
+          flat
+          dense
+          round
+          icon="refresh"
+          aria-label="Refresh"
+          @click="reload()"
+        />
       </q-toolbar>
     </q-header>
 
@@ -97,6 +105,10 @@ const leftDrawerOpen = ref(false);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
+function reload() {
+  location.reload();
 }
 
 const router = useRouter();

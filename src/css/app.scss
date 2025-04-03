@@ -119,8 +119,9 @@ td.details-td {
 }
 
 .source-info {
+  height: auto;
   max-height: 50vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .source-info a {

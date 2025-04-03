@@ -16,6 +16,10 @@
       <div class="label">Roud</div>
       <div class="info-items">{{ song.roud }}</div>
     </div>
+    <div
+      style="flex-grow: 1"
+      v-if="song.alt.length == 0 && !song.info && !song.roud"
+    />
     <div class="song-buttons">
       <q-btn
         size="sm"
