@@ -3,6 +3,7 @@
     :rows="songs"
     :columns="COLUMNS"
     row-key="name"
+    :grid="gridMode"
     card-class="song-table"
     :rows-per-page-options="NO_ROWS"
     :filter="[
@@ -62,6 +63,47 @@
         </q-td>
       </q-tr>
     </template>
+    <template v-slot:item="props">
+      <div class="col-xs-4 col-sm-3 col-md-2">
+        <q-card
+          flat
+          bordered
+          style="
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+          "
+        >
+          <q-card-section class="text-center">
+            {{ props.row.name }}
+          </q-card-section>
+          <q-popup-proxy v-model="props.expand">
+            <q-card dark bordered class="bg-grey-9 my-card">
+              <q-card-section>
+                <div class="text-h6">{{ props.row.name }}</div>
+                <div class="text-subtitle2">
+                  {{ props.row.categories.join(', ') }}
+                </div>
+                <div>
+                  {{ props.row.date.toLocaleDateString('en-GB', DATE_FORMAT) }}
+                </div>
+              </q-card-section>
+
+              <q-separator dark inset />
+
+              <q-card-section>
+                <SongDetails
+                  :song="props.row"
+                  :visible="props.expand"
+                  horizontal
+                />
+              </q-card-section>
+            </q-card>
+          </q-popup-proxy>
+        </q-card>
+      </div>
+    </template>
   </q-table>
 </template>
 
@@ -78,6 +120,12 @@ function removeThe(s: string): string {
   if (s.startsWith('The')) return s.substring(4);
   return s;
 }
+const DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  weekday: undefined,
+  day: 'numeric',
+  month: 'short',
+  year: '2-digit',
+};
 
 const COLUMNS: QTableProps['columns'] = [
   {
@@ -103,13 +151,7 @@ const COLUMNS: QTableProps['columns'] = [
     name: 'date',
     label: 'Date Added',
     field: (row: Song) => {
-      const options: Intl.DateTimeFormatOptions = {
-        weekday: undefined,
-        day: 'numeric',
-        month: 'short',
-        year: '2-digit',
-      };
-      return row.date.toLocaleDateString('en-GB', options);
+      return row.date.toLocaleDateString('en-GB', DATE_FORMAT);
     },
     required: true,
     align: 'center',
@@ -131,6 +173,7 @@ const props = defineProps<{
   } | null;
   acc_filter: boolean;
   unacc_filter: boolean;
+  gridMode: boolean;
 }>();
 
 const { songs, singers, categories, themes, purposes } = await getSongs();

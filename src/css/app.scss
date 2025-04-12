@@ -172,7 +172,8 @@ td.details-td {
   flex-grow: 1;
 }
 
-.details .song-buttons {
+.details .song-buttons,
+.song-buttons.horizontal {
   display: flex;
   flex-grow: 0;
   flex-direction: column;
@@ -181,4 +182,12 @@ td.details-td {
   min-height: 65px;
   height: 100%;
   max-height: 100px;
+  &.horizontal {
+    & > * {
+      margin-right: 5px;
+    }
+    min-height: 0;
+
+    flex-direction: row;
+  }
 }

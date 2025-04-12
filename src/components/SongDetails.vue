@@ -20,7 +20,7 @@
       style="flex-grow: 1"
       v-if="song.alt.length == 0 && !song.info && !song.roud"
     />
-    <div class="song-buttons">
+    <div class="song-buttons" v-if="!horizontal">
       <q-btn
         size="sm"
         color="accent"
@@ -41,6 +41,26 @@
       />
     </div>
   </div>
+  <div class="song-buttons horizontal" v-if="horizontal">
+    <q-btn
+      size="sm"
+      color="accent"
+      round
+      dense
+      :href="song.reference"
+      v-if="song.reference"
+      icon="info"
+    />
+    <q-btn
+      size="sm"
+      color="accent"
+      round
+      dense
+      :to="'/lyrics/' + encodeURIComponent(song.name)"
+      icon="lyrics"
+      v-if="song.lyrics"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -49,15 +69,20 @@ import { default as DOMPurify } from 'dompurify';
 import { marked } from 'marked';
 import { ref, watchEffect } from 'vue';
 
-const { song, visible } = defineProps<{ song: Song; visible: boolean }>();
+const { song, visible, horizontal } = defineProps<{
+  song: Song;
+  visible: boolean;
+  horizontal?: boolean;
+}>();
 
-const rendered = false;
+let rendered = false;
 
 watchEffect(() => {
   if (visible && !rendered && song.info) {
-    marked
-      .parse(song.info, { async: true })
-      .then((s) => (info.value = DOMPurify.sanitize(s)));
+    marked.parse(song.info, { async: true }).then((s) => {
+      info.value = DOMPurify.sanitize(s);
+      rendered = true;
+    });
   }
 });
 

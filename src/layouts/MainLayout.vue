@@ -14,6 +14,17 @@
         <q-toolbar-title class="toolbar-title" @click="home"
           >The Folkbook</q-toolbar-title
         >
+        <q-toggle
+          flat
+          dense
+          round
+          color="grey"
+          keep-color
+          checked-icon="grid_view"
+          aria-label="Display Mode"
+          unchecked-icon="list"
+          v-model="gridMode"
+        />
         <q-btn
           flat
           dense
@@ -39,7 +50,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view v-slot="{ Component }">
+      <router-view v-slot="{ Component }" :grid-mode="gridMode">
         <keep-alive include="SongTable,TablePage">
           <Suspense> <component :is="Component" /></Suspense>
         </keep-alive>
@@ -102,6 +113,7 @@ const references = [
 ];
 
 const leftDrawerOpen = ref(false);
+const gridMode = ref(false);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;

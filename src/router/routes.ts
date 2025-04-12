@@ -12,7 +12,9 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/info/:song_name',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/InfoPage.vue') }],
+    children: [
+      { path: '', component: () => import('pages/InfoPage.vue'), props: true },
+    ],
   },
   {
     path: '/lyrics/:song_name',

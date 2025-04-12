@@ -150,6 +150,7 @@
         @updateCategories="(map) => doOptionsUpdate(categories, map)"
         @updateThemes="(map) => doOptionsUpdate(themes, map)"
         @updatePurposes="(map) => doOptionsUpdate(purposes, map)"
+        :gridMode="gridMode"
       />
     </Suspense>
     <q-page-scroller
@@ -168,6 +169,10 @@ import SongTable from 'src/components/SongTable.vue';
 import { QField } from 'quasar';
 import type { TagFilterModel, Option } from 'src/components/TagTab.vue';
 import TagTab from 'src/components/TagTab.vue';
+
+const { gridMode } = defineProps<{
+  gridMode: boolean;
+}>();
 
 const categories = ref(new Array<Option>());
 const themes = ref(new Array<Option>());
