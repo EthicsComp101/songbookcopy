@@ -75,13 +75,13 @@ const { song, visible, horizontal } = defineProps<{
   horizontal?: boolean;
 }>();
 
-let rendered = false;
+let rendered: string | null = null;
 
 watchEffect(() => {
-  if (visible && !rendered && song.info) {
+  if (visible && song.info && (rendered == null || rendered != song.name)) {
     marked.parse(song.info, { async: true }).then((s) => {
       info.value = DOMPurify.sanitize(s);
-      rendered = true;
+      rendered = song.name;
     });
   }
 });
