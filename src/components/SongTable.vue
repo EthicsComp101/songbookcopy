@@ -261,7 +261,8 @@ function filter(
         !row.alt.some((altName) => altName.toLowerCase().includes(keyword)) &&
         !row.themes.some((themeName) =>
           themeName.toLowerCase().includes(keyword),
-        )
+        ) &&
+        !row.lyrics?.toLowerCase().includes(keyword)
       )
         return false;
     }
