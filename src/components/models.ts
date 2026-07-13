@@ -7,7 +7,21 @@ export interface Meta {
   totalCount: number;
 }
 
+export type Version = {
+  id: string;
+  // null for the imported catalogue rows — Dylan has no account, and some
+  // of those versions explicitly aren't his. Don't invent an attribution.
+  addedBy: string | null;
+  authorName: string | null;
+  lyrics?: string;
+  notes?: string;
+  source?: string;
+  date: Date;
+};
+
 export type Song = {
+  id: string;
+  versions: Version[];
   name: string;
   alt: string[];
   roud?: number;

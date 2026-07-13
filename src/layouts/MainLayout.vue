@@ -100,6 +100,12 @@ import { useAuthStore } from 'src/stores/auth-store';
 
 const tools = [
   {
+    title: 'My List',
+    caption: 'Versions you are learning or know',
+    icon: 'bookmark',
+    to: '/my-list',
+  },
+  {
     title: 'Add a Song',
     caption: 'For adding new entries to this site',
     icon: 'post_add',

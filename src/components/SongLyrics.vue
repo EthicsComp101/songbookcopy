@@ -1,44 +1,46 @@
 <template>
-  <div class="lyrics" v-if="lyrics">
-    <h5 class="text-h5">{{ song_name }}</h5>
-    <div
-      class="section"
-      v-for="(section, index) in lyrics"
-      :key="index"
-      @click="scrollTo($event)"
-    >
-      {{ section }}
+  <div class="lyrics-page" v-if="song">
+    <h5 class="text-h5">{{ song.name }}</h5>
+    <div class="text-caption q-mb-md" v-if="song.versions.length > 1">
+      {{ song.versions.length }} versions of this song
+    </div>
+    <SongVersion
+      v-for="version in song.versions"
+      :key="version.id"
+      :version="version"
+    />
+    <div v-if="!auth.signedIn" class="text-caption q-mt-md signin-hint">
+      <router-link to="/signin">Sign in</router-link> to save a version to
+      your list.
     </div>
   </div>
-  <div class="notice" v-else>No Lyrics Available</div>
+  <div class="notice" v-else>Song not found</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import { getSongs } from 'src/util/load-table';
+import { useAuthStore } from 'src/stores/auth-store';
+import SongVersion from 'src/components/SongVersion.vue';
 
-export default defineComponent({
-  name: 'SongLyrics',
-  props: ['song_name'],
-  async setup(props) {
-    const { songs } = await getSongs();
-    let song = null;
-    for (const a_song of songs) {
-      if (props.song_name == a_song.name) {
-        song = a_song;
-      }
-    }
-    if (song == null) return {};
-    const lyrics = song.lyrics?.split(/\n *\n/);
-    return { song, lyrics };
-  },
-  methods: {
-    scrollTo(event: MouseEvent) {
-      const target_obj = event.target;
-      if (!(target_obj instanceof Element)) return;
+const props = defineProps<{ song_name: string }>();
 
-      target_obj.scrollIntoView({ behavior: 'smooth' });
-    },
-  },
-});
+const auth = useAuthStore();
+
+const { songs } = await getSongs();
+const song = songs.find((s) => s.name === props.song_name) ?? null;
 </script>
+
+<style lang="scss" scoped>
+.lyrics-page {
+  padding: 12px 16px;
+  max-width: 700px;
+
+  h5 {
+    margin: 0.5em 0 0.3em 0;
+  }
+
+  .signin-hint {
+    opacity: 0.8;
+  }
+}
+</style>

@@ -1,4 +1,4 @@
-import type { Song } from 'src/components/models';
+import type { Song, Version } from 'src/components/models';
 import { supabase } from './supabase';
 type Results = {
   songs: Song[];
@@ -10,12 +10,17 @@ type Results = {
 let songs_promise: Promise<Results> | null = null;
 
 type VersionRow = {
+  id: string;
+  added_by: string | null;
   lyrics: string | null;
   notes: string | null;
+  source: string | null;
   created_at: string;
+  profiles: { display_name: string } | null;
 };
 
 type SongRow = {
+  id: string;
   title: string;
   alt_titles: string[];
   roud: number | null;
@@ -39,7 +44,7 @@ export async function getSongs(): Promise<Results> {
     const { data, error } = await supabase
       .from('songs')
       .select(
-        'title, alt_titles, roud, composer, themes, categories, purposes, singers, refrain, accompanied, unaccompanied, happiness, reference, created_at, versions(lyrics, notes, created_at)',
+        'id, title, alt_titles, roud, composer, themes, categories, purposes, singers, refrain, accompanied, unaccompanied, happiness, reference, created_at, versions(id, added_by, lyrics, notes, source, created_at, profiles!added_by(display_name))',
       )
       .order('created_at', { ascending: true })
       .order('created_at', { referencedTable: 'versions', ascending: true })
@@ -47,12 +52,25 @@ export async function getSongs(): Promise<Results> {
     if (error || data == null) {
       throw new Error('Failed to fetch songs: ' + (error?.message ?? 'no data'));
     }
-      const songs: Song[] = (data as SongRow[]).map((row) => {
-        // One song, many versions — for now the app shows the first
-        // (oldest) version's lyrics/notes, matching the old one-row-per-song
-        // sheet. Multiple versions come later.
+      // Cast via unknown: without generated DB types the client guesses the
+      // embedded `profiles` join is an array, but added_by -> profiles.id is
+      // many-to-one, so PostgREST returns a single object at runtime.
+      const songs: Song[] = (data as unknown as SongRow[]).map((row) => {
+        const versions: Version[] = row.versions.map((v) => ({
+          id: v.id,
+          addedBy: v.added_by,
+          authorName: v.profiles?.display_name ?? null,
+          lyrics: v.lyrics ?? '',
+          notes: v.notes ?? '',
+          source: v.source ?? '',
+          date: new Date(v.created_at),
+        }));
+        // The table's search/filter and the old single-lyrics fields keep
+        // reading from the first (oldest) version, as before.
         const version = row.versions[0];
         return {
+          id: row.id,
+          versions,
           name: row.title,
           alt: row.alt_titles,
           roud: row.roud ?? 0,

@@ -4,7 +4,7 @@
       <template #fallback>
         <div class="notice">Loading...</div>
       </template>
-      <SongLyrics :song_name="$route.params.song_name" />
+      <SongLyrics :song_name="String($route.params.song_name)" />
     </Suspense>
     <q-page-sticky position="top-right" :offset="[18, 18]">
       <q-btn fab to="/" icon='arrow_back' color="accent" />
