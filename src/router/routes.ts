@@ -21,6 +21,28 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/LyricsPage.vue') }],
   },
+  {
+    path: '/signin',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/SignInPage.vue') }],
+  },
+  {
+    path: '/auth/callback',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/AuthCallbackPage.vue') },
+    ],
+  },
+  {
+    path: '/profile',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/ProfilePage.vue') }],
+  },
+  {
+    path: '/add',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/AddSongPage.vue') }],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
