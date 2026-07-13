@@ -131,3 +131,7 @@ dist
 /quasar.config.*.temporary.compiled*
 
 .env.local*
+
+# Database backups — NEVER commit these. This repo is public; profiles
+# holds display names and saves reveals what people are privately learning.
+backups/

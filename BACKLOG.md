@@ -284,7 +284,18 @@ signups open. Worth actual legal advice. Do not bulk-import from lyrics sites.
 ### Backups
 The Supabase free tier has **no automatic backups**. Once singers are typing
 their own notes and lyrics into this, that's their work, and you owe them a
-backup. Can be done for free; needs setting up.
+backup.
+
+`scripts/backup.ts` now dumps songs, versions, profiles and saves as
+timestamped JSON into `backups/` (gitignored — this repo is public, and
+profiles/saves are personal data). But:
+
+- **This is manual** — someone has to remember to run it.
+- **Automating it** (a scheduled GitHub Action) must write to a private repo
+  or a private store, never this public one.
+- **It doesn't capture `auth.users`.** A true full restore would need
+  `pg_dump` with the database connection string. The user-generated content
+  is covered; the accounts themselves are not.
 
 ### Deployment
 Still local-only. Netlify (what Dylan uses) stays free. Needs a domain (~$15/yr),
