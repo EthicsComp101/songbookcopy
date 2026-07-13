@@ -262,7 +262,12 @@ function filter(
         !row.themes.some((themeName) =>
           themeName.toLowerCase().includes(keyword),
         ) &&
-        !row.lyrics?.toLowerCase().includes(keyword)
+        // Every version's lyrics, not just the first — someone else's verse
+        // must be findable too. (row.lyrics stays as "the first version's
+        // lyrics" for display.)
+        !row.versions.some((version) =>
+          version.lyrics?.toLowerCase().includes(keyword),
+        )
       )
         return false;
     }
