@@ -1,5 +1,5 @@
 import type { Song } from 'src/components/models';
-import { capitalize } from 'vue';
+import { supabase } from './supabase';
 type Results = {
   songs: Song[];
   singers: Map<string, number>;
@@ -9,13 +9,99 @@ type Results = {
 };
 let songs_promise: Promise<Results> | null = null;
 
-// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-/* function shuffleArray<T>(array: T[]): void {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-} */
+type VersionRow = {
+  lyrics: string | null;
+  notes: string | null;
+  created_at: string;
+};
+
+type SongRow = {
+  title: string;
+  alt_titles: string[];
+  roud: number | null;
+  composer: string | null;
+  themes: string[];
+  categories: string[];
+  purposes: string[];
+  singers: string[];
+  refrain: string | null;
+  accompanied: boolean;
+  unaccompanied: boolean;
+  happiness: number | null;
+  reference: string | null;
+  created_at: string;
+  versions: VersionRow[];
+};
+
+export async function getSongs(): Promise<Results> {
+  if (songs_promise != null) return songs_promise;
+  songs_promise = (async () => {
+    const { data, error } = await supabase
+      .from('songs')
+      .select(
+        'title, alt_titles, roud, composer, themes, categories, purposes, singers, refrain, accompanied, unaccompanied, happiness, reference, created_at, versions(lyrics, notes, created_at)',
+      )
+      .order('created_at', { ascending: true })
+      .order('created_at', { referencedTable: 'versions', ascending: true })
+      .limit(1000);
+    if (error || data == null) {
+      throw new Error('Failed to fetch songs: ' + (error?.message ?? 'no data'));
+    }
+      const songs: Song[] = (data as SongRow[]).map((row) => {
+        // One song, many versions — for now the app shows the first
+        // (oldest) version's lyrics/notes, matching the old one-row-per-song
+        // sheet. Multiple versions come later.
+        const version = row.versions[0];
+        return {
+          name: row.title,
+          alt: row.alt_titles,
+          roud: row.roud ?? 0,
+          singers: row.singers,
+          date: new Date(row.created_at),
+          composer: row.composer ?? '',
+          unaccompanied: row.unaccompanied,
+          accompanied: row.accompanied,
+          refrain: row.refrain ?? '',
+          themes: row.themes,
+          categories: row.categories,
+          purposes: row.purposes,
+          happiness: row.happiness ?? 0,
+          reference: row.reference ?? '',
+          lyrics: version?.lyrics ?? '',
+          info: version?.notes ?? '',
+        };
+      });
+      const singers: Map<string, number> = new Map();
+      const categories: Map<string, number> = new Map();
+      const themes: Map<string, number> = new Map();
+      const purposes: Map<string, number> = new Map();
+      for (const song of songs) {
+        for (const singer of song.singers) {
+          const count = singers.get(singer);
+          singers.set(singer, 1 + (count ?? 0));
+        }
+        for (const cat of song.categories) {
+          const count = categories.get(cat);
+          categories.set(cat, 1 + (count ?? 0));
+        }
+        for (const theme of song.themes) {
+          const count = themes.get(theme);
+          themes.set(theme, 1 + (count ?? 0));
+        }
+        for (const purpose of song.purposes) {
+          const count = purposes.get(purpose);
+          purposes.set(purpose, 1 + (count ?? 0));
+        }
+      }
+      return { songs, singers, categories, themes, purposes };
+  })();
+  return songs_promise;
+}
+
+/* ------------------------------------------------------------------
+ * Old Google Sheet loader, kept until the Supabase path is confirmed.
+ * ------------------------------------------------------------------
+import { capitalize } from 'vue';
 
 export async function getSongs(): Promise<Results> {
   if (songs_promise != null) return songs_promise;
@@ -124,3 +210,4 @@ function parseDate(dateTime: string): Date {
     time[2] ?? 0,
   );
 }
+------------------------------------------------------------------ */

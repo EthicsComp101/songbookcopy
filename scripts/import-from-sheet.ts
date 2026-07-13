@@ -11,10 +11,15 @@ import { createClient } from '@supabase/supabase-js';
 
 process.loadEnvFile(new URL('../.env', import.meta.url).pathname);
 
+// This script deliberately uses the SECRET key (no VITE_ prefix — it must
+// never reach the browser bundle). RLS only allows authenticated users to
+// write, and these seed rows have added_by = null, so the import needs to
+// bypass RLS. The app client (src/util/supabase.ts) stays on the
+// publishable key.
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const supabaseKey = process.env.SUPABASE_SECRET_KEY;
 if (!supabaseUrl || !supabaseKey) {
-  console.error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY in .env');
+  console.error('Missing VITE_SUPABASE_URL or SUPABASE_SECRET_KEY in .env');
   process.exit(1);
 }
 const supabase = createClient(supabaseUrl, supabaseKey);
