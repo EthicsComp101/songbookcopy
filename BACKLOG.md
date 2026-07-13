@@ -91,9 +91,36 @@ Fine at 379 songs and one user. Needs proper cache invalidation — or a Pinia
 store as the source of truth — before this is a real multi-user app. Will bite
 again as soon as saves exist.
 
+### Search only matches the FIRST version's lyrics — URGENT
+`Song.lyrics` still means "the first version's lyrics", so `SongTable.vue`'s
+filter only ever sees version one.
+
+**This breaks the core loop.** Someone adds their version of *Barbara Allen* with
+a verse Dylan's doesn't have — and searching that verse finds nothing. The whole
+app is "half-remember a line → find the version". If search can't see every
+version, it can't do the one thing it's for.
+
+Do this before anything else on this list. Probably: a Postgres full-text index
+across all versions' lyrics, with search moving server-side (which also fixes the
+"download everything and filter in the browser" problem at the same time).
+
+### Generated database types
+`load-table.ts` currently casts the Supabase response through `unknown` to
+`SongRow[]` — an assertion, not a fact. The runtime shape was checked by hand and
+the null-profile case is handled, but nothing stops the two drifting apart.
+
+Fix: `supabase gen types typescript` to generate real types from the live schema,
+and delete the cast. Then the compiler checks the join against the actual
+database instead of taking our word for it.
+
+Note the wrinkle already found: `versions` and `profiles` are related **two ways**
+— directly via `added_by`, and many-to-many through `saves` — so joins need the
+explicit `profiles!added_by` hint.
+
 ### Duplicate detection on add
-The hard, important one, and it is now **live** — nothing currently stops
-someone creating a second *Barbara Allen*.
+The hard, important one, and it is now **visible in the data**: the catalogue
+currently contains both *"derby ram"* and *"Derby Ram"*, differing only by case,
+because nothing stops it.
 
 When someone adds a song, work out whether it already exists — and if so, offer
 to add their words as a **version** rather than creating a duplicate song.
@@ -108,8 +135,9 @@ to add their words as a **version** rather than creating a duplicate song.
    each phrase by how rare it is across the corpus (TF-IDF); the rare n-grams do
    the identifying.
 3. **Fuzzy title or alt-title match** (`pg_trgm` installed; trigram index on
-   `title`) -> maybe. Catches "Barb'ry Allen" vs "Barbara Allen". Completely
-   misses "Died for Love" vs "The Butcher Boy" — hence step 2.
+   `title`) -> maybe. Catches "Barb'ry Allen" vs "Barbara Allen", and would have
+   caught "derby ram" vs "Derby Ram" instantly. Completely misses "Died for Love"
+   vs "The Butcher Boy" — hence step 2.
 4. **Nothing** -> new song.
 
 **It always asks. It never merges silently.** "This looks like it might be
@@ -118,6 +146,8 @@ a human who knows the song spots it in half a second.
 
 An LLM call earns its place at steps 2-3: hand it the candidates and the new
 lyrics and ask "same song?"
+
+**Also needed:** a way to merge the duplicates that already exist.
 
 ### Save to learn
 The feature the whole thing is for. A button on each **version**. Saved things
@@ -207,6 +237,22 @@ Options:
 Leaning towards the grace period. **A typo caught thirty seconds later is not the
 same act as renaming a song other people have already saved**, and treating them
 identically is what makes locked titles feel bureaucratic rather than protective.
+
+### You can't delete a song you just created by mistake
+**Found in use.** The catalogue now contains both *"derby ram"* and *"Derby Ram"*,
+and **nothing in the app can remove either.** The schema says "nobody may delete —
+songs are shared property", which is right for an established song other people
+have saved, and wrong for a duplicate you made ninety seconds ago. The rule can't
+tell a fresh mistake from vandalism.
+
+Same failure as the locked-titles rule. Both need the same kind of fix.
+
+Proposed: `created_by` may delete a song **if and only if** it has no versions
+other than their own, and nobody has saved any of them. That's a song nobody else
+has touched — deleting it destroys nothing but the creator's own mistake.
+Otherwise: no deletion, and duplicates get merged rather than removed.
+
+Until then, duplicates have to be deleted by hand in the Supabase dashboard.
 
 ### Public/private saves toggle
 Saves are private, full stop, today. Make it user-toggleable — "three other
